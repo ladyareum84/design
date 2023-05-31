@@ -1,0 +1,60 @@
+/* 터치 디바이스, 모바일에서 hover 제거하기 */
+모바일 기기는 마우스 대신 터치로 상호작용을 한다. 
+엘리먼트를 터치하게 되면 브라우저는 포인터가 계속 해당 엘리먼트에 위에 머물고 있다고 인식한다. 
+따라서 다른 곳을 터치해 상호작용을 다시 발생시키지 않는 이상 :hover에 효과가 사라지지 않는 것이다. 
+반면에 PC는 마우스가 계속 움직이면서 상호 작용을 일으키기에 정상적으로 동작하는 것이다.
+
+해결방법
+01. CSS의 미디어 쿼리 이용하기
+<style>
+a:hover { /* default hover effect */
+    color: black;
+    background: yellow;
+  }
+  
+  @media (hover: hover) { /* when supported */
+    a:hover {
+      color: white;
+      background: black;
+    }
+}
+</style>
+
+02. pointer
+hover를 지원하면서, 
+pointer는 마우스와 같은 정확한 포인터 장치를 지원하는 장치에서만 :hover가 동작되도록하는 코드
+
+@media pointer는 장치에 포인터의 존재 여부와 포인팅 장치의 정확도를 확인한다.
+corase: 터치 스크린에 사용되는 손가락 처럼 부정확한 포인터 장치 지원
+fine: 마우스처럼 정확한 포인터 장치 지원
+none: 포인터가 없는 장치
+
+@media (hover: hover) and (pointer: fine) { /* when supported */
+    a:hover {
+      color: white;
+      background: black;
+    }
+  }
+
+  03. Javascript를 통한 모바일 디바이스 구분하기 (터치 가능 디바이스)
+  javascript로 디바이스를 판단하여 클래스를 추가하여 처리
+<style>
+  .can-hover a:hover {
+   color: white;
+   background: black;
+}
+</style>
+<script>
+    const isTouchDevice = ('ontouchstart' in window)||
+    (navigator.maxTouchPoints > 0)||
+    (navigator.msMaxTouchPoints > 0));
+
+    if(!isTouchDevice) { // 모바일 디바이스가 아니면
+    document.body.classList.add('can-hover'); // 상위에 클래스를 추가한다.
+    }
+</script>
+ontouchstart 이벤트는 모바일 기기에만 포함되어 있고, 
+navigator.maxTouchPoints는 PC인 경우 터치가 불가능하므로 0으로 출력된다. 
+위에 나온 값들로 터치 가능 디바이스를 구분
+터치 디바이스가 아니면 특정 클래스 이름을 최상위에 추가하고, 
+해당 클래스의 자식일때만 hover 효과가 적용
