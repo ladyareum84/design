@@ -1,0 +1,149 @@
+<!-- 
+	* New CSS Features 
+-->
+
+<!-- 
+	@property 규칙 (Chrome 85+, Firefox 128+, Safari 16.4+)
+	JavaScript를 실행하지 않고도 스타일시트에서 직접 사용자 정의 CSS 속성을 정의하는데 사용
+	규칙 @property에는 데이터 유형 검사 및 제한 기능이 있으며, 기본값을 설정하고 속성이 값을 상속할 수 있는지 여부를 정의
+-->
+
+<!-- 
+@property --내 색상 {
+	구문: '<숫자> , <색상>, <길이>'; // 허용되는 데이터 유형(예: <color>, <length>, <number>)을 지정
+	상속: 거짓; //성이 부모 요소로부터 값을 상속하는지 여부를 제어
+	초기값: 파란색; //다른 값이 할당되지 않으면 속성의 기본값을 설정
+}
+.요소 {
+	배경색: var(--my-color); // 기본값은 파란색
+}
+.요소.빨간색 {
+	--my-color: red; // 기본값을 재정의합니다
+} 
+
+body {
+	backgound-color: var(--myColor);
+}
+-->
+
+<style>
+	@property --my-color {
+		syntax: '<color>'; 
+		inherits: false;
+		initial-value: blue;
+	}
+	.element {
+		background-color: var(--my-color); /* Defaults to blue */
+	}
+	.element.red {
+		--my-color: red; /* Overrides the default */
+	}
+
+	/* gradient Animation */
+	@property --startColor {
+		syntax: "<color>";
+		initial-value: #EADEDB;
+		inherits: false;
+	}
+
+	@property --endColor {
+		syntax: "<color>";
+		initial-value: #BC70A4;
+		inherits: false;
+	}
+
+	/* [example] gradient Animation */
+	.ex1 {
+		background: linear-gradient(var(--startColor), var(--endColor));
+		animation: gradient 3s linear infinite;
+	}
+
+	@keyframes gradient {
+		0%,
+		100% {
+			--startColor: #EADEDB;
+			--endColor: #BC70A4;
+		}
+		50% {
+			--startColor: #BC70A4;
+			--endColor: #BFD641;
+		}
+	}
+
+	#grad1 {
+		height: 200px;
+	}
+</style>
+
+
+/* 
+	@scope규칙 (Chrome 118, Firefox 128, Safari 17.4)
+	DOM의 특정 섹션에 대한 로컬화된 스타일 컨텍스트를 생성
+	ID, Class 또는 속성 선택기로 요소를 타겟팅할 수 있으므로 범위가 지정된 영역을 정의하는 데 유연성이 제공
+*/
+
+
+<div id="my-component">
+	<p>This paragraph is inside the scope.</p>
+</div>
+<p>This paragraph is outside the scope.</p>
+<style>
+	@scope (#my-component) {
+		p {
+			color: blue;
+		}
+	}
+</style>
+
+
+/* 
+	@starting-style규칙 (Chrome 117, Firefox 129, Safari 17.5)
+	** CSS 애니메이션과 전환
+	요소가 첫 번째 스타일 업데이트를 받기 전에 요소의 시작 스타일을 정의하는 데 사용
+	팝오버, 모달 또는 표시:없음에서 표시됨 상태로 변경되는 모든 요소의 원활한 시작 및 종료 전환을 생성하는 데 사용
+*/
+
+/* 
+.element {
+  전환: 배경색 0.5초 이즈인-아웃;
+  배경색: 파란색; // 최종 상태 
+}
+@starting-style {
+  .요소 {
+    background-color: red; // 전환을 위한 초기 상태
+  }
+}
+.element:hover {
+  배경색: 녹색; //빨간색(시작 스타일)에서 녹색으로 전환
+}
+*/
+
+<style>
+.element {
+  transition: background-color 0.5s ease-in-out;
+  background-color: blue; /* Final state */
+}
+@starting-style {
+.element {
+    background-color: red; /* Initial state for the transition */
+  }
+}
+.element:hover {
+  background-color: green; /* Transition from red (starting style) to green */
+}
+</style>
+
+<div class="box">HELLO!</div>
+<style>
+.box {
+  width: 150px;
+  height: 150px;
+  background-color: pink;
+  opacity: 1;
+  transition: all 0.9s ease;
+  @starting-style {
+    opacity: 0;
+    translate: 0 -80px;
+  }
+}
+</style>
